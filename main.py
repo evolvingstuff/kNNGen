@@ -85,6 +85,8 @@ def predict_next_token(input_text, model, tokenizer, index, tokens, k):
 def main():
     logging.basicConfig(level=logging.INFO)
 
+    torch.set_num_threads(1)
+
     print(f'preparing {model_name} model...')
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModel.from_pretrained(model_name)
