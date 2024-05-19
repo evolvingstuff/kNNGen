@@ -13,15 +13,17 @@ import faiss
 from datasets import load_dataset
 from transformers import (
     AutoTokenizer,
-    AutoModel,
-    AutoModelForCausalLM)
+    AutoModel)
 
 
 # TODO move to config file
 K = 1
 device_name = 'mps'  # 'mps'
-space_token = '▁'  # "Ġ"
-model_name = 'mistralai/Mistral-7B-v0.1'  # 'gpt2'
+limit_corpus_size = 1000
+# model_name = 'gpt2'
+# space_token = "Ġ"
+model_name = 'mistralai/Mistral-7B-v0.1'
+space_token = '▁'
 dataset_config = {
     "path": "wikitext",
     "name": "wikitext-2-raw-v1"
@@ -46,6 +48,9 @@ def create_faiss_index(model, tokenizer, corpus, device):
 
 def interactive_text_generator(model, tokenizer, index, tokens, device):
     print("Interactive Text Generator:")
+    # TODO: fix this to dynamically change per model
+    # space_token = tokenizer.encode(' ', add_special_tokens=False)
+    # print(f'space token: "{space_token}"')
     while True:
         input_text = input("Enter your text (or 'quit' to exit): ")
         if input_text.lower() == 'quit':
@@ -54,9 +59,10 @@ def interactive_text_generator(model, tokenizer, index, tokens, device):
         k = int(input("K: "))
         generated_text = input_text
         for t in range(tokens_to_generate):
-            next_token = predict_next_token(generated_text, model, tokenizer, index, tokens, k, device)
+            next_token = predict_next_token(generated_text, model, tokenizer, index, tokens, k, device, space_token)
             print(next_token, end='')
             generated_text = generated_text + next_token
+        print('')
         print('------------------------')
         print(generated_text)
 
@@ -71,7 +77,7 @@ def get_embeddings_and_tokens(model, tokenizer, text, device):
     return embeddings, tokens
 
 
-def predict_next_token(input_text, model, tokenizer, index, tokens, k, device):
+def predict_next_token(input_text, model, tokenizer, index, tokens, k, device, space_token):
     inputs = tokenizer(input_text, return_tensors="pt", truncation=True, max_length=512).to(device)
     with torch.no_grad():
         outputs = model(**inputs)
@@ -121,8 +127,8 @@ def main():
             continue
         print(txt)
         corpus.append(txt)
-        if len(corpus) >= 50:
-            print('ending corpus early')
+        if limit_corpus_size is not None and len(corpus) >= limit_corpus_size:
+            print(f'ending corpus early at {limit_corpus_size} examples')
             break
 
     if os.path.exists('data.pkl'):
