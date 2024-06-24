@@ -1,0 +1,2 @@
+TODO
+  * seems to be a threading issue with OpenMP and Mac

@@ -1,4 +1,5 @@
 *.pkl
+*.bin
 **/__pycache__/
 venv/
 .idea/
