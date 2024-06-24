@@ -4,3 +4,6 @@
 venv/
 .idea/
 .env
+volumes/
+embedEtcd.yaml
+standalone_embed.sh
