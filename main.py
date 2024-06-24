@@ -9,7 +9,6 @@ import logging
 import os
 
 
-
 # TODO move to config file
 K = 1
 threads = 1  # None

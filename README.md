@@ -15,7 +15,6 @@ and later might incorporate ideas from this paper as well:
 Requires Docker.
 
 Install and run Milvus, as explained [here](https://milvus.io/docs/install_standalone-docker.md):
-
 ```
 # Download the installation script
 $ curl -sfL https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/standalone_embed.sh -o standalone_embed.sh
@@ -23,11 +22,10 @@ $ curl -sfL https://raw.githubusercontent.com/milvus-io/milvus/master/scripts/st
 # Start the Docker container
 $ bash standalone_embed.sh start
 ```
+Optionally run `milvus_test.py` to see if that worked.
 
 Create a `.env` file, and inside of it add your HuggingFace API token, like so:
-
 ```
 HF_TOKEN=your_hugging_face_api_token_here
 ```
-
 *Or* add the equivalent to your system's environment variables.
